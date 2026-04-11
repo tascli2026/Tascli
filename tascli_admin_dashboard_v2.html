@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tascli — CEO Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#1a56db; --blue2:#1e40af;
+  --blue-soft:#eff6ff; --blue-mid:#dbeafe;
+  --accent:#06b6d4; --accent2:#0891b2;
+  --navy:#0f1f3d; --white:#fff; --off-white:#f8faff;
+  --gray-50:#f1f5f9; --gray-100:#e2e8f0; --gray-400:#94a3b8; --gray-600:#475569;
+  --text:#0f172a; --text2:#475569; --text3:#94a3b8;
+  --green:#059669; --green-light:#d1fae5;
+  --red:#dc2626; --red-light:#fee2e2;
+  --amber:#d97706; --amber-light:#fef3c7;
+  --purple:#7c3aed; --purple-light:#f5f3ff;
+  --radius:18px; --radius-sm:12px; --radius-xs:9px;
+  --shadow-sm:0 2px 8px rgba(26,86,219,0.07);
+  --shadow:0 4px 20px rgba(26,86,219,0.11);
+  --shadow-lg:0 8px 32px rgba(26,86,219,0.16);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--off-white); color:var(--text); min-height:100vh; display:flex; }
+
+/* SIDEBAR */
+.sidebar { width:220px; flex-shrink:0; background:var(--white); border-right:1px solid var(--gray-100); display:flex; flex-direction:column; padding:20px 0; position:fixed; top:0; left:0; bottom:0; z-index:100; box-shadow:var(--shadow-sm); }
+.sb-logo { padding:0 18px 20px; border-bottom:1px solid var(--gray-100); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.sb-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--blue); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sb-wordmark { font-family:'Sora',sans-serif; font-size:19px; font-weight:800; color:var(--navy); letter-spacing:-0.3px; }
+.sb-wordmark span { color:var(--blue); }
+.sb-utah { font-size:8px; font-weight:700; color:var(--text3); letter-spacing:3px; text-transform:uppercase; display:block; margin-top:-1px; }
+
+.nav-grp { padding:0 10px; margin-bottom:4px; }
+.nav-grp-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; padding:6px 8px 5px; }
+.nav-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:var(--radius-xs); cursor:pointer; transition:all 0.15s; font-size:13px; font-weight:500; color:var(--text2); margin-bottom:2px; }
+.nav-item:hover { background:var(--off-white); color:var(--navy); }
+.nav-item.active { background:var(--blue-soft); color:var(--blue); font-weight:700; }
+.nav-icon { font-size:15px; width:20px; text-align:center; flex-shrink:0; }
+.nav-badge { margin-left:auto; font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; min-width:18px; text-align:center; }
+.nb-red    { background:var(--red-light); color:var(--red); }
+.nb-amber  { background:var(--amber-light); color:var(--amber); }
+.nb-blue   { background:var(--blue-soft); color:var(--blue); }
+
+.sb-bottom { margin-top:auto; padding:14px 10px 0; border-top:1px solid var(--gray-100); }
+.profile-mini { display:flex; align-items:center; gap:10px; padding:10px; border-radius:var(--radius-xs); cursor:pointer; transition:background 0.15s; }
+.profile-mini:hover { background:var(--off-white); }
+.pm-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--accent)); display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-size:13px; font-weight:800; color:white; flex-shrink:0; }
+.pm-name { font-size:13px; font-weight:700; color:var(--navy); }
+.pm-role { font-size:10px; color:var(--text3); }
+
+/* MAIN */
+.main { margin-left:220px; flex:1; display:flex; flex-direction:column; }
+
+/* TOPBAR */
+.topbar { background:var(--white); border-bottom:1px solid var(--gray-100); padding:14px 28px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; box-shadow:var(--shadow-sm); }
+.tb-title { font-family:'Sora',sans-serif; font-size:18px; font-weight:800; color:var(--navy); }
+.tb-sub { font-size:12px; color:var(--text3); margin-top:1px; }
+.tb-right { display:flex; align-items:center; gap:10px; }
+.status-pill { display:flex; align-items:center; gap:6px; background:var(--green-light); border:1px solid #6ee7b7; border-radius:99px; padding:6px 14px; font-size:12px; font-weight:700; color:var(--green); cursor:pointer; }
+.sp-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+.notif-btn { width:36px; height:36px; border-radius:var(--radius-xs); background:var(--off-white); border:1px solid var(--gray-100); display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; position:relative; }
+.notif-dot { position:absolute; top:6px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--red); border:2px solid var(--white); }
+
+/* CONTENT */
+.content { padding:24px; flex:1; }
+.screen { display:none; animation:fadeIn 0.2s ease; }
+.screen.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+/* KPI GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; }
+.kpi { background:var(--white); border-radius:var(--radius-sm); border:1px solid var(--gray-100); padding:18px 20px; position:relative; overflow:hidden; transition:all 0.2s; box-shadow:var(--shadow-sm); }
+.kpi:hover { box-shadow:var(--shadow); transform:translateY(-1px); }
+.kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.kpi-blue::before   { background:var(--blue); }
+.kpi-green::before  { background:var(--green); }
+.kpi-accent::before { background:var(--accent); }
+.kpi-purple::before { background:var(--purple); }
+.kpi-lbl { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.09em; margin-bottom:10px; }
+.kpi-val { font-family:'Sora',sans-serif; font-size:28px; font-weight:800; color:var(--navy); line-height:1; margin-bottom:6px; }
+.kpi-blue .kpi-val   { color:var(--blue); }
+.kpi-green .kpi-val  { color:var(--green); }
+.kpi-accent .kpi-val { color:var(--accent2); }
+.kpi-change { font-size:12px; font-weight:600; }
+.cu { color:var(--green); }
+.cw { color:var(--amber); }
+.kpi-icon { position:absolute; top:16px; right:16px; font-size:20px; opacity:0.2; }
+
+/* PANELS */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.col-wide { grid-column:span 2; }
+.panel { background:var(--white); border-radius:var(--radius-sm); border:1px solid var(--gray-100); box-shadow:var(--shadow-sm); }
+.panel-head { padding:14px 18px; border-bottom:1px solid var(--gray-100); display:flex; align-items:center; justify-content:space-between; }
+.panel-title { font-family:'Sora',sans-serif; font-size:14px; font-weight:700; color:var(--navy); }
+.panel-action { font-size:12px; font-weight:700; color:var(--blue); cursor:pointer; }
+.panel-body { padding:14px 18px; }
+
+/* RIDE LIST */
+.ride-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--gray-50); }
+.ride-row:last-child { border-bottom:none; }
+.rride-icon { width:34px; height:34px; border-radius:var(--radius-xs); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.ri-blue   { background:var(--blue-soft); }
+.ri-cyan   { background:#ecfeff; }
+.ri-purple { background:var(--purple-light); }
+.ri-green  { background:var(--green-light); }
+.ride-info { flex:1; min-width:0; }
+.ride-pass { font-size:13px; font-weight:600; color:var(--navy); }
+.ride-detail { font-size:11px; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ride-right { text-align:right; flex-shrink:0; }
+.ride-fare { font-size:14px; font-weight:800; color:var(--navy); }
+.ride-comm { font-size:11px; font-weight:700; color:var(--green); margin-top:1px; }
+.ride-status { font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; margin-top:4px; display:inline-block; }
+.rs-active    { background:var(--green-light); color:var(--green); }
+.rs-done      { background:var(--gray-50); color:var(--text3); }
+.rs-scheduled { background:var(--amber-light); color:var(--amber); }
+
+/* DRIVER ROW */
+.driver-row-item { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--gray-50); }
+.driver-row-item:last-child { border-bottom:none; }
+.dri-avatar { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-size:14px; font-weight:800; color:white; flex-shrink:0; }
+.dri-online { border:2px solid var(--green); }
+.dri-offline { opacity:0.45; }
+.dri-info { flex:1; }
+.dri-name { font-size:13px; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:6px; }
+.online-dot { width:7px; height:7px; border-radius:50%; background:var(--green); }
+.offline-dot { width:7px; height:7px; border-radius:50%; background:var(--gray-400); }
+.dri-meta { font-size:11px; color:var(--text2); margin-top:2px; }
+.dri-right { text-align:right; }
+.dri-earn { font-size:13px; font-weight:800; color:var(--navy); }
+.dri-comm { font-size:11px; font-weight:700; color:var(--green); margin-top:1px; }
+
+/* APPROVAL CARDS */
+.appr-card { background:var(--off-white); border-radius:var(--radius-sm); border:1px solid var(--gray-100); padding:16px; margin-bottom:12px; transition:all 0.3s; }
+.ac-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.ac-avatar { width:42px; height:42px; border-radius:50%; background:var(--gray-100); border:2px solid var(--gray-100); display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-size:15px; font-weight:800; color:var(--text2); }
+.ac-name { font-size:14px; font-weight:700; color:var(--navy); }
+.ac-zone { font-size:12px; color:var(--text2); margin-top:2px; }
+.ac-pending { margin-left:auto; background:var(--amber-light); color:var(--amber); border:1px solid #fde68a; font-size:10px; font-weight:700; padding:3px 9px; border-radius:99px; }
+.ac-details { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.ac-detail { background:var(--white); border-radius:var(--radius-xs); padding:8px 10px; border:1px solid var(--gray-100); }
+.ac-dlbl { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
+.ac-dval { font-size:12px; color:var(--navy); font-weight:600; margin-top:2px; }
+.ac-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.btn-approve { padding:10px; border-radius:var(--radius-xs); background:var(--blue); border:none; color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.btn-approve:hover { background:var(--blue2); }
+.btn-reject { padding:10px; border-radius:var(--radius-xs); background:var(--red-light); border:1px solid #fca5a5; color:var(--red); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+/* EARNINGS CHARTS */
+.earn-hero-admin { background:linear-gradient(135deg,var(--blue),#1e3a8a); border-radius:var(--radius-sm); padding:20px; color:white; margin-bottom:16px; box-shadow:var(--shadow-lg); }
+.cha-label { font-size:11px; opacity:0.6; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; margin-bottom:6px; }
+.cha-amount { font-family:'Sora',sans-serif; font-size:40px; font-weight:800; line-height:1; }
+.cha-period { font-size:13px; opacity:0.6; margin-top:6px; }
+
+.chart-bars { display:flex; align-items:flex-end; gap:6px; height:80px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar { width:100%; border-radius:4px 4px 0 0; background:var(--blue-soft); border:1px solid var(--blue-mid); cursor:pointer; transition:all 0.2s; min-height:4px; }
+.bar:hover { background:var(--blue-mid); }
+.bar.today { background:var(--blue); border-color:var(--blue); }
+.bar-lbl { font-size:10px; color:var(--text3); font-weight:600; }
+
+.earn-breakdown { display:flex; flex-direction:column; gap:8px; }
+.eb-row { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--off-white); border-radius:var(--radius-xs); border:1px solid var(--gray-100); font-size:13px; }
+.eb-lbl { color:var(--text2); }
+.eb-val { font-weight:800; }
+.ev-blue  { color:var(--blue); }
+.ev-green { color:var(--green); }
+.ev-red   { color:var(--red); }
+.ev-total { font-size:16px; color:var(--blue); }
+
+/* ZONES ADMIN */
+.zone-admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.zone-admin-tile { background:var(--off-white); border-radius:var(--radius-xs); border:1.5px solid var(--gray-100); padding:14px; cursor:pointer; transition:all 0.2s; }
+.zone-admin-tile:hover { border-color:var(--blue); }
+.zone-admin-tile.active { border-color:var(--blue); background:var(--blue-soft); }
+.zat-name { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.zat-drivers { font-size:12px; color:var(--text2); }
+.zat-status { font-size:10px; font-weight:700; margin-top:8px; }
+.zats-active { color:var(--green); }
+.zats-soon   { color:var(--amber); }
+.zats-locked { color:var(--text3); }
+
+/* MESSAGES */
+.msg-list { display:flex; flex-direction:column; gap:8px; }
+.msg-item { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:var(--off-white); border-radius:var(--radius-xs); border:1px solid var(--gray-100); cursor:pointer; transition:all 0.15s; }
+.msg-item:hover { border-color:var(--blue); }
+.msg-item.unread { border-color:var(--blue-mid); background:var(--blue-soft); }
+.msg-ava { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:white; flex-shrink:0; }
+.msg-body { flex:1; min-width:0; }
+.msg-name { font-size:13px; font-weight:700; color:var(--navy); }
+.msg-prev { font-size:12px; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.msg-time { font-size:11px; color:var(--text3); flex-shrink:0; }
+.msg-udot { width:8px; height:8px; border-radius:50%; background:var(--blue); flex-shrink:0; margin-top:4px; }
+
+/* QUICK ACTIONS */
+.qa-grid { display:flex; flex-direction:column; gap:8px; }
+.qa-btn { width:100%; padding:12px 14px; border-radius:var(--radius-xs); border:none; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; transition:all 0.15s; }
+.qa-blue   { background:var(--blue-soft); color:var(--blue); border:1px solid var(--blue-mid); }
+.qa-blue:hover { background:var(--blue-mid); }
+.qa-green  { background:var(--green-light); color:var(--green); border:1px solid #6ee7b7; }
+.qa-amber  { background:var(--amber-light); color:var(--amber); border:1px solid #fde68a; }
+.qa-purple { background:var(--purple-light); color:var(--purple); border:1px solid #ddd6fe; }
+
+/* SETTINGS */
+.setting-item { display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--gray-50); }
+.setting-item:last-child { border-bottom:none; }
+.si-left { }
+.si-title { font-size:14px; font-weight:600; color:var(--navy); }
+.si-sub   { font-size:12px; color:var(--text2); margin-top:2px; }
+.si-val   { font-size:13px; font-weight:700; color:var(--blue); cursor:pointer; }
+.toggle-s { width:40px; height:22px; border-radius:99px; background:var(--blue); position:relative; cursor:pointer; transition:background 0.2s; }
+.toggle-s.off { background:var(--gray-100); }
+.toggle-s::after { content:''; position:absolute; top:3px; right:3px; width:16px; height:16px; border-radius:50%; background:white; transition:right 0.2s; }
+.toggle-s.off::after { right:auto; left:3px; }
+
+/* MY RIDES BANNER */
+.my-rides-banner { background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:1.5px solid #6ee7b7; border-radius:var(--radius-sm); padding:18px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; }
+.mrb-left { }
+.mrb-label { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.09em; margin-bottom:4px; }
+.mrb-title { font-family:'Sora',sans-serif; font-size:18px; font-weight:800; color:var(--navy); }
+.mrb-sub { font-size:13px; color:var(--text2); margin-top:2px; }
+.mrb-stats { display:flex; gap:20px; }
+.mrbs-val { font-family:'Sora',sans-serif; font-size:20px; font-weight:800; color:var(--green); }
+.mrbs-lbl { font-size:11px; color:var(--text2); margin-top:2px; }
+
+/* NO APPROVALS */
+.no-approvals { padding:40px; text-align:center; display:none; }
+.na-icon { font-size:36px; margin-bottom:12px; }
+.na-title { font-family:'Sora',sans-serif; font-size:18px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+.na-sub { font-size:14px; color:var(--text2); }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; right:24px; background:var(--navy); border:1px solid var(--blue-mid); border-radius:var(--radius-sm); padding:11px 20px; font-size:13px; font-weight:600; color:var(--white); z-index:999; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; box-shadow:var(--shadow-lg); }
+.toast.show { opacity:1; transform:translateY(0); }
+
+@media (max-width:900px) { .sidebar{display:none} .main{margin-left:0} .kpi-grid{grid-template-columns:repeat(2,1fr)} .two-col{grid-template-columns:1fr} .col-wide{grid-column:span 1} }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 50 50" fill="none">
+        <path d="M25 3C16.163 3 9 10.163 9 19C9 29.5 25 47 25 47C25 47 41 29.5 41 19C41 10.163 33.837 3 25 3Z" fill="white"/>
+        <circle cx="25" cy="19" r="8" fill="#1a56db"/>
+        <path d="M18 21L18 23.5L32 23.5L32 21L29.5 21L28.2 17L21.8 17L20.5 21Z" fill="white"/>
+        <rect x="20" y="22" width="3.5" height="2.5" rx="1.25" fill="white" opacity="0.65"/>
+        <rect x="26.5" y="22" width="3.5" height="2.5" rx="1.25" fill="white" opacity="0.65"/>
+      </svg>
+    </div>
+    <div>
+      <div class="sb-wordmark">tasc<span>li</span></div>
+      <span class="sb-utah">UTAH</span>
+    </div>
+  </div>
+
+  <div class="nav-grp">
+    <div class="nav-grp-label">Overview</div>
+    <div class="nav-item active" onclick="goScreen('overview',this)"><span class="nav-icon">⚡</span><span data-en="Dashboard" data-es="Panel">Dashboard</span></div>
+    <div class="nav-item" onclick="goScreen('myrides',this)"><span class="nav-icon">🚗</span><span data-en="My Rides" data-es="Mis Viajes">My Rides</span></div>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-label">Operations</div>
+    <div class="nav-item" onclick="goScreen('rides',this)"><span class="nav-icon">📍</span><span data-en="Live Rides" data-es="Viajes en Vivo">Live Rides</span><span class="nav-badge nb-blue">3</span></div>
+    <div class="nav-item" onclick="goScreen('drivers',this)"><span class="nav-icon">👥</span><span data-en="Drivers" data-es="Choferes">Drivers</span></div>
+    <div class="nav-item" onclick="goScreen('approvals',this)"><span class="nav-icon">✅</span><span data-en="Approvals" data-es="Aprobaciones">Approvals</span><span class="nav-badge nb-amber">2</span></div>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-label">Business</div>
+    <div class="nav-item" onclick="goScreen('earnings',this)"><span class="nav-icon">💰</span><span data-en="Earnings" data-es="Ganancias">Earnings</span></div>
+    <div class="nav-item" onclick="goScreen('zones',this)"><span class="nav-icon">🗺</span><span data-en="Zones" data-es="Zonas">Zones</span></div>
+    <div class="nav-item" onclick="goScreen('messages',this)"><span class="nav-icon">💬</span><span data-en="Messages" data-es="Mensajes">Messages</span><span class="nav-badge nb-red">5</span></div>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-label">Account</div>
+    <div class="nav-item" onclick="goScreen('settings',this)"><span class="nav-icon">⚙️</span><span data-en="Settings" data-es="Configuración">Settings</span></div>
+  </div>
+
+  <div class="sb-bottom">
+    <div class="profile-mini">
+      <div class="pm-avatar">R</div>
+      <div><div class="pm-name">Romi</div><div class="pm-role">Founder · Tascli</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="topbar-title">Dashboard</div>
+      <div class="tb-sub" id="topbar-sub"><span data-en="Monday, April 6 · Utah Valley · 4 drivers online" data-es="Lunes, 6 de Abril · Utah Valley · 4 choferes en línea">Monday, April 6 · Utah Valley · 4 drivers online</span></div>
+    </div>
+    <div class="tb-right" style="display:flex;align-items:center;gap:10px;">
+  <div style="display:flex;background:var(--off-white);border-radius:99px;overflow:hidden;border:1px solid var(--gray-100);">
+    <button id="btn-en" onclick="setLang('en')" style="padding:5px 12px;font-size:11px;font-weight:700;background:var(--blue);color:white;border:none;cursor:pointer;font-family:inherit;">EN</button>
+    <button id="btn-es" onclick="setLang('es')" style="padding:5px 12px;font-size:11px;font-weight:700;background:none;color:var(--text3);border:none;cursor:pointer;font-family:inherit;">ES</button>
+  </div>
+      <div class="status-pill" onclick="showToast('✅ Platform is live · 4 drivers online')"><div class="sp-dot"></div><span data-en="Live" data-es="En Vivo">Live</span></div>
+      <div class="notif-btn" onclick="showToast('🔔 2 pending approvals · 5 new messages')">🔔<div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="screen active" id="screen-overview">
+      <div class="kpi-grid">
+        <div class="kpi kpi-blue"><div class="kpi-lbl"><span data-en="Today's GMV" data-es="Ventas de Hoy">Today's GMV</span></div><div class="kpi-val">$847</div><div class="kpi-change cu">↑ 18% vs yesterday</div><div class="kpi-icon">💵</div></div>
+        <div class="kpi kpi-green"><div class="kpi-lbl"><span data-en="Your Commission" data-es="Tu Comisión">Your Commission</span></div><div class="kpi-val">$127</div><div class="kpi-change cu">15% · 4 drivers</div><div class="kpi-icon">💰</div></div>
+        <div class="kpi kpi-accent"><div class="kpi-lbl"><span data-en="Active Drivers" data-es="Choferes Activos">Active Drivers</span></div><div class="kpi-val">4/7</div><div class="kpi-change cw">3 offline today</div><div class="kpi-icon">👥</div></div>
+        <div class="kpi kpi-purple"><div class="kpi-lbl"><span data-en="Rides Today" data-es="Viajes Hoy">Rides Today</span></div><div class="kpi-val">18</div><div class="kpi-change cu">↑ 3 from yesterday</div><div class="kpi-icon">🚗</div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel col-wide">
+          <div class="panel-head"><div class="panel-title"><span data-en="Live & Recent Rides" data-es="Viajes en Vivo y Recientes">Live & Recent Rides</span></div><div class="panel-action" onclick="goScreen('rides',null)">View all →</div></div>
+          <div class="panel-body">
+            <div class="ride-row"><div class="rride-icon ri-blue">🏥</div><div class="ride-info"><div class="ride-pass">Dorothy Wilson</div><div class="ride-detail">Maria G. · Orem → IHC Utah Valley · 8.2mi</div></div><div class="ride-right"><div class="ride-fare">$75</div><div class="ride-comm">+$11.25</div><div class="ride-status rs-active">● Active</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-cyan">✈️</div><div class="ride-info"><div class="ride-pass">Robert Martinez</div><div class="ride-detail">James C. · Provo → SLC Airport · 46mi</div></div><div class="ride-right"><div class="ride-fare">$65</div><div class="ride-comm">+$9.75</div><div class="ride-status rs-scheduled">⏰ 5:30am</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-purple">🏫</div><div class="ride-info"><div class="ride-pass">Emma Johnson (14)</div><div class="ride-detail">Linda P. · Home → Provo High</div></div><div class="ride-right"><div class="ride-fare">$25</div><div class="ride-comm">+$3.75</div><div class="ride-status rs-done">✓ Done</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-green">👴</div><div class="ride-info"><div class="ride-pass">Harold & Betty T.</div><div class="ride-detail">You (Romi) · BYU → Costco Orem</div></div><div class="ride-right"><div class="ride-fare">$35</div><div class="ride-comm">100% yours</div><div class="ride-status rs-done">✓ Done</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span data-en="Drivers Right Now" data-es="Choferes Ahora">Drivers Right Now</span></div><div class="panel-action" onclick="goScreen('drivers',null)">Manage →</div></div>
+          <div class="panel-body">
+            <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,var(--blue),var(--accent))">M</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>Maria González</div><div class="dri-meta">Utah Valley · 5 rides · Camry</div></div><div class="dri-right"><div class="dri-earn">$337</div><div class="dri-comm">+$50 comm.</div></div></div>
+            <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">J</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>James Carter</div><div class="dri-meta">SLC Zone · 3 rides · Pilot</div></div><div class="dri-right"><div class="dri-earn">$195</div><div class="dri-comm">+$29 comm.</div></div></div>
+            <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">L</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>Linda Park</div><div class="dri-meta">Utah Valley · 4 rides · Subaru</div></div><div class="dri-right"><div class="dri-earn">$160</div><div class="dri-comm">+$24 comm.</div></div></div>
+            <div class="driver-row-item"><div class="dri-avatar dri-offline" style="background:#94a3b8">C</div><div class="dri-info"><div class="dri-name"><span class="offline-dot"></span>Carlos M.</div><div class="dri-meta">Utah Valley · 0 rides today</div></div><div class="dri-right"><div class="dri-earn" style="color:var(--text3)">$0</div><div class="dri-comm" style="color:var(--text3)">offline</div></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span data-en="Quick Actions" data-es="Acciones Rápidas">Quick Actions</span></div></div>
+          <div class="panel-body">
+            <div class="qa-grid">
+              <button class="qa-btn qa-amber" onclick="goScreen('approvals',null);showToast('📋 2 drivers waiting for approval')">⏳ Review 2 Pending Drivers</button>
+              <button class="qa-btn qa-blue" onclick="showToast('📢 Broadcast sent to all online drivers')">📢 Broadcast to All Drivers</button>
+              <button class="qa-btn qa-green" onclick="goScreen('myrides',null)">🚗 Add My Own Ride</button>
+              <button class="qa-btn qa-purple" onclick="showToast('📊 Report exported to support@tascli.com')">📊 Export Weekly Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MY RIDES ══ -->
+    <div class="screen" id="screen-myrides">
+      <div class="my-rides-banner">
+        <div class="mrb-left">
+          <div class="mrb-label">🚗 You as Driver</div>
+          <div class="mrb-title">Your Personal Rides</div>
+          <div class="mrb-sub">100% goes to you · No commission shared</div>
+        </div>
+        <div class="mrb-stats">
+          <div><div class="mrbs-val">$345</div><div class="mrbs-lbl">Today</div></div>
+          <div><div class="mrbs-val">8</div><div class="mrbs-lbl">Rides</div></div>
+          <div><div class="mrbs-val">$1,740</div><div class="mrbs-lbl">This week</div></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Today's My Rides</div><div class="panel-action" onclick="showToast('➕ Add ride form opened')">+ Add ride</div></div>
+          <div class="panel-body">
+            <div class="ride-row"><div class="rride-icon ri-green">👴</div><div class="ride-info"><div class="ride-pass">Harold & Betty T.</div><div class="ride-detail">BYU Area → Costco Orem · 4.5mi</div></div><div class="ride-right"><div class="ride-fare">$35</div><div class="ride-status rs-done">✓ Done</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-blue">🏥</div><div class="ride-info"><div class="ride-pass">Carmen Reyes</div><div class="ride-detail">Orem → Utah Valley Clinic · 5.8mi</div></div><div class="ride-right"><div class="ride-fare">$45</div><div class="ride-status rs-done">✓ Done</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-cyan">✈️</div><div class="ride-info"><div class="ride-pass">David Kim</div><div class="ride-detail">Provo → SLC Airport · 46mi</div></div><div class="ride-right"><div class="ride-fare">$65</div><div class="ride-status rs-done">✓ Done</div></div></div>
+            <div class="ride-row"><div class="rride-icon ri-blue">🏥</div><div class="ride-info"><div class="ride-pass">Margaret Wilson</div><div class="ride-detail">Provo → IHC Utah Valley · wait incl.</div></div><div class="ride-right"><div class="ride-fare">$90</div><div class="ride-status rs-active">● Now</div></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Weekly Breakdown · You</div></div>
+          <div class="panel-body">
+            <div class="chart-bars" style="margin-bottom:12px">
+              <div class="bar-col"><div class="bar" style="height:60%" onclick="showToast('Mon: $240')"></div><div class="bar-lbl">M</div></div>
+              <div class="bar-col"><div class="bar" style="height:75%" onclick="showToast('Tue: $310')"></div><div class="bar-lbl">T</div></div>
+              <div class="bar-col"><div class="bar" style="height:50%" onclick="showToast('Wed: $195')"></div><div class="bar-lbl">W</div></div>
+              <div class="bar-col"><div class="bar" style="height:85%" onclick="showToast('Thu: $355')"></div><div class="bar-lbl">T</div></div>
+              <div class="bar-col"><div class="bar" style="height:70%" onclick="showToast('Fri: $295')"></div><div class="bar-lbl">F</div></div>
+              <div class="bar-col"><div class="bar today" style="height:82%" onclick="showToast('Today: $345')"></div><div class="bar-lbl">S</div></div>
+              <div class="bar-col"><div class="bar" style="height:8%;opacity:0.3"></div><div class="bar-lbl">S</div></div>
+            </div>
+            <div class="earn-breakdown">
+              <div class="eb-row"><span class="eb-lbl">Gross earnings</span><span class="eb-val ev-blue">$1,740</span></div>
+              <div class="eb-row"><span class="eb-lbl">Tesla rental</span><span class="eb-val ev-red">−$355</span></div>
+              <div class="eb-row"><span class="eb-lbl">Charging (4×)</span><span class="eb-val ev-red">−$56</span></div>
+              <div class="eb-row" style="background:var(--green-light);border-color:#6ee7b7"><span class="eb-lbl" style="color:var(--green);font-weight:700">Net this week</span><span class="eb-val ev-total" style="font-size:18px">$1,329</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LIVE RIDES ══ -->
+    <div class="screen" id="screen-rides">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi kpi-green"><div class="kpi-lbl">Active Now</div><div class="kpi-val">3</div><div class="kpi-change cu">All on route</div><div class="kpi-icon">🟢</div></div>
+        <div class="kpi kpi-blue"><div class="kpi-lbl">Scheduled</div><div class="kpi-val">7</div><div class="kpi-change cu">Next: 2:30pm</div><div class="kpi-icon">⏰</div></div>
+        <div class="kpi kpi-accent"><div class="kpi-lbl">Completed</div><div class="kpi-val">11</div><div class="kpi-change cu">↑ from 8 yesterday</div><div class="kpi-icon">✓</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">All Rides Today</div><div class="panel-action" onclick="showToast('➕ Manual ride added')">+ Add manual</div></div>
+        <div class="panel-body">
+          <div class="ride-row"><div class="rride-icon ri-blue">🏥</div><div class="ride-info"><div class="ride-pass">Dorothy Wilson</div><div class="ride-detail">Maria G. · Orem → IHC Utah Valley · wait incl.</div></div><div class="ride-right"><div class="ride-fare">$75</div><div class="ride-comm">+$11.25</div><div class="ride-status rs-active">● Active</div></div></div>
+          <div class="ride-row"><div class="rride-icon ri-green">👴</div><div class="ride-info"><div class="ride-pass">Harold & Betty T.</div><div class="ride-detail">You (Romi) · BYU → Costco Orem</div></div><div class="ride-right"><div class="ride-fare">$35</div><div class="ride-comm">100% yours</div><div class="ride-status rs-done">✓ Done</div></div></div>
+          <div class="ride-row"><div class="rride-icon ri-cyan">✈️</div><div class="ride-info"><div class="ride-pass">David Kim</div><div class="ride-detail">You (Romi) · Provo → SLC Airport</div></div><div class="ride-right"><div class="ride-fare">$65</div><div class="ride-comm">100% yours</div><div class="ride-status rs-done">✓ Done</div></div></div>
+          <div class="ride-row"><div class="rride-icon ri-purple">🏫</div><div class="ride-info"><div class="ride-pass">Emma Johnson (14)</div><div class="ride-detail">Linda P. · Home → Provo High School</div></div><div class="ride-right"><div class="ride-fare">$25</div><div class="ride-comm">+$3.75</div><div class="ride-status rs-done">✓ Done</div></div></div>
+          <div class="ride-row"><div class="rride-icon ri-cyan">✈️</div><div class="ride-info"><div class="ride-pass">Robert Martinez</div><div class="ride-detail">James C. · Provo → SLC Airport · Tomorrow 5:30am</div></div><div class="ride-right"><div class="ride-fare">$65</div><div class="ride-comm">+$9.75</div><div class="ride-status rs-scheduled">⏰ Scheduled</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DRIVERS ══ -->
+    <div class="screen" id="screen-drivers">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">All Drivers (7 total)</div><div class="panel-action" onclick="goScreen('approvals',null)">+ Review pending</div></div>
+        <div class="panel-body">
+          <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,var(--blue),var(--accent))">R</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>Romi (You) <span style="background:var(--blue-soft);color:var(--blue);font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700">CEO + Driver</span></div><div class="dri-meta">Utah Valley · Tesla · tascli.com founder</div></div><div class="dri-right"><div class="dri-earn">$345 today</div><div class="dri-comm">100% yours</div></div></div>
+          <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">M</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>Maria González</div><div class="dri-meta">Utah Valley · ⭐ 4.9 · 127 rides · Camry</div></div><div class="dri-right"><div class="dri-earn">5 rides</div><div class="dri-comm">+$50 comm.</div></div></div>
+          <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">J</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>James Carter</div><div class="dri-meta">SLC Zone · ⭐ 4.8 · 89 rides · Pilot</div></div><div class="dri-right"><div class="dri-earn">3 rides</div><div class="dri-comm">+$29 comm.</div></div></div>
+          <div class="driver-row-item"><div class="dri-avatar dri-online" style="background:linear-gradient(135deg,#059669,#34d399)">L</div><div class="dri-info"><div class="dri-name"><span class="online-dot"></span>Linda Park</div><div class="dri-meta">Utah Valley · ⭐ 5.0 · 203 rides · Subaru</div></div><div class="dri-right"><div class="dri-earn">4 rides</div><div class="dri-comm">+$24 comm.</div></div></div>
+          <div class="driver-row-item"><div class="dri-avatar dri-offline" style="background:#94a3b8">C</div><div class="dri-info"><div class="dri-name"><span class="offline-dot"></span>Carlos M.</div><div class="dri-meta">Utah Valley · ⭐ 4.7 · 44 rides · RAV4</div></div><div class="dri-right"><div class="dri-earn" style="color:var(--text3)">0 rides</div><div class="dri-comm" style="color:var(--text3)">offline</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ APPROVALS ══ -->
+    <div class="screen" id="screen-approvals">
+      <div style="margin-bottom:16px;font-size:14px;color:var(--text2);line-height:1.7;background:var(--white);border-radius:var(--radius-sm);padding:14px 18px;border:1px solid var(--gray-100)">Review each driver before they receive rides. <strong style="color:var(--blue)">Only approve people you'd trust with your own clients.</strong></div>
+
+      <div class="appr-card" id="appr-1">
+        <div class="ac-head">
+          <div class="ac-avatar">S</div>
+          <div><div class="ac-name">Sofia Ramirez</div><div class="ac-zone">📍 Applied for Utah Valley · 2 hrs ago</div></div>
+          <div class="ac-pending">Pending</div>
+        </div>
+        <div class="ac-details">
+          <div class="ac-detail"><div class="ac-dlbl">Vehicle</div><div class="ac-dval">2020 Toyota Corolla</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">License</div><div class="ac-dval">Utah DL · Valid 2028</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Background</div><div class="ac-dval" style="color:var(--green)">✓ Passed</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Experience</div><div class="ac-dval">Uber · 1 year</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Languages</div><div class="ac-dval">Spanish · English</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Insurance</div><div class="ac-dval" style="color:var(--green)">✓ Rideshare</div></div>
+        </div>
+        <div class="ac-actions">
+          <button class="btn-reject" onclick="rejectDriver('appr-1','Sofia')">✗ Reject</button>
+          <button class="btn-approve" onclick="approveDriver('appr-1','Sofia')">✓ Approve Utah Valley</button>
+        </div>
+      </div>
+
+      <div class="appr-card" id="appr-2">
+        <div class="ac-head">
+          <div class="ac-avatar" style="background:var(--green-light);color:var(--green)">T</div>
+          <div><div class="ac-name">Thomas Reed</div><div class="ac-zone">📍 Applied for SLC Zone · 5 hrs ago</div></div>
+          <div class="ac-pending">Pending</div>
+        </div>
+        <div class="ac-details">
+          <div class="ac-detail"><div class="ac-dlbl">Vehicle</div><div class="ac-dval">2019 Ford Explorer</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">License</div><div class="ac-dval">Utah DL · Valid 2027</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Background</div><div class="ac-dval" style="color:var(--green)">✓ Passed</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Experience</div><div class="ac-dval">Lyft · 5 years</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Languages</div><div class="ac-dval">English only</div></div>
+          <div class="ac-detail"><div class="ac-dlbl">Insurance</div><div class="ac-dval" style="color:var(--amber)">⚠ Needs update</div></div>
+        </div>
+        <div class="ac-actions">
+          <button class="btn-reject" onclick="rejectDriver('appr-2','Thomas')">✗ Reject</button>
+          <button class="btn-approve" onclick="approveDriver('appr-2','Thomas')">✓ Approve SLC Zone</button>
+        </div>
+      </div>
+
+      <div class="no-approvals" id="no-approvals">
+        <div class="na-icon">✅</div>
+        <div class="na-title">All caught up!</div>
+        <div class="na-sub">No pending driver applications right now.</div>
+      </div>
+    </div>
+
+    <!-- ══ EARNINGS ══ -->
+    <div class="screen" id="screen-earnings">
+      <div class="kpi-grid">
+        <div class="kpi kpi-blue"><div class="kpi-lbl">This Month</div><div class="kpi-val">$3,240</div><div class="kpi-change cu">↑ 22% vs last</div><div class="kpi-icon">📈</div></div>
+        <div class="kpi kpi-green"><div class="kpi-lbl">Your Rides</div><div class="kpi-val">$1,740</div><div class="kpi-change cu">100% · this week</div><div class="kpi-icon">🚗</div></div>
+        <div class="kpi kpi-accent"><div class="kpi-lbl">Commissions</div><div class="kpi-val">$487</div><div class="kpi-change cu">From 6 drivers</div><div class="kpi-icon">💸</div></div>
+        <div class="kpi" style="border-top:3px solid var(--red)"><div class="kpi-lbl">Tesla Cost</div><div class="kpi-val" style="color:var(--red)">−$411</div><div class="kpi-change cw">Rental + charging</div><div class="kpi-icon">🔋</div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Weekly Earnings · All Sources</div></div>
+          <div class="panel-body">
+            <div class="chart-bars" style="margin-bottom:16px">
+              <div class="bar-col"><div class="bar" style="height:55%"></div><div class="bar-lbl">W1</div></div>
+              <div class="bar-col"><div class="bar" style="height:65%"></div><div class="bar-lbl">W2</div></div>
+              <div class="bar-col"><div class="bar" style="height:48%"></div><div class="bar-lbl">W3</div></div>
+              <div class="bar-col"><div class="bar today" style="height:78%"></div><div class="bar-lbl">Now</div></div>
+            </div>
+            <div class="earn-breakdown">
+              <div class="eb-row"><span class="eb-lbl">Your rides (this week)</span><span class="eb-val ev-blue">$1,740</span></div>
+              <div class="eb-row"><span class="eb-lbl">Platform commissions</span><span class="eb-val ev-blue">$127</span></div>
+              <div class="eb-row"><span class="eb-lbl">Tesla rental + charging</span><span class="eb-val ev-red">−$411</span></div>
+              <div class="eb-row" style="background:var(--green-light);border-color:#6ee7b7"><span class="eb-lbl" style="color:var(--green);font-weight:700">Net this week</span><span class="eb-val" style="color:var(--green);font-size:18px">$1,456</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Commission by Driver</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--off-white);border-radius:var(--radius-xs);border:1px solid var(--gray-100)"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white">M</div><span style="font-size:13px;font-weight:600">Maria G.</span></div><div style="text-align:right"><div style="font-size:13px;font-weight:800;color:var(--green)">$50.55</div><div style="font-size:10px;color:var(--text3)">5 rides</div></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--off-white);border-radius:var(--radius-xs);border:1px solid var(--gray-100)"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white">J</div><span style="font-size:13px;font-weight:600">James C.</span></div><div style="text-align:right"><div style="font-size:13px;font-weight:800;color:var(--green)">$29.25</div><div style="font-size:10px;color:var(--text3)">3 rides</div></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--off-white);border-radius:var(--radius-xs);border:1px solid var(--gray-100)"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#059669,#34d399);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white">L</div><span style="font-size:13px;font-weight:600">Linda P.</span></div><div style="text-align:right"><div style="font-size:13px;font-weight:800;color:var(--green)">$24.00</div><div style="font-size:10px;color:var(--text3)">4 rides</div></div></div>
+              <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--green-light);border:1px solid #6ee7b7;border-radius:var(--radius-xs)"><span style="font-size:13px;font-weight:700;color:var(--green)">Total today</span><span style="font-size:16px;font-weight:800;color:var(--green)">$103.80</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ZONES ══ -->
+    <div class="screen" id="screen-zones">
+      <div style="margin-bottom:16px;font-size:14px;color:var(--text2);line-height:1.7;background:var(--white);border-radius:var(--radius-sm);padding:14px 18px;border:1px solid var(--gray-100)">Start focused. Dominate Utah Valley first, then expand to SLC. <strong style="color:var(--blue)">One zone at a time.</strong></div>
+      <div class="zone-admin-grid">
+        <div class="zone-admin-tile active" onclick="showToast('Utah Valley is your home zone')"><div class="zat-name">📍 Utah Valley</div><div class="zat-drivers">6 drivers · Provo · Orem · BYU</div><div class="zat-status zats-active">✓ ACTIVE · Your home base</div></div>
+        <div class="zone-admin-tile" onclick="this.classList.toggle('active');showToast('🗺 SLC Zone toggled')"><div class="zat-name">🏙 Salt Lake City</div><div class="zat-drivers">2 pending · Airport focus</div><div class="zat-status zats-soon">⏳ Tap to activate</div></div>
+        <div class="zone-admin-tile" style="opacity:0.4;cursor:not-allowed"><div class="zat-name">🎿 Park City</div><div class="zat-drivers">0 drivers · Ski Q3 2026</div><div class="zat-status zats-locked">🔒 Coming Q3 2026</div></div>
+        <div class="zone-admin-tile" style="opacity:0.4;cursor:not-allowed"><div class="zat-name">🏜 St. George / Moab</div><div class="zat-drivers">Tourism zone · 0 drivers</div><div class="zat-status zats-locked">🔒 Coming Q4 2026</div></div>
+      </div>
+    </div>
+
+    <!-- ══ MESSAGES ══ -->
+    <div class="screen" id="screen-messages">
+      <div class="msg-list">
+        <div class="msg-item unread" onclick="this.classList.remove('unread');showToast('💬 Chat with Maria opened')"><div class="msg-ava" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">M</div><div class="msg-body"><div class="msg-name">Maria González · Driver</div><div class="msg-prev">Hey! Dorothy's appointment ended early, should I take her home now?</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><div class="msg-time">2m ago</div><div class="msg-udot"></div></div></div>
+        <div class="msg-item unread" onclick="this.classList.remove('unread');showToast('💬 Chat with Sofia opened')"><div class="msg-ava" style="background:linear-gradient(135deg,var(--purple),#a78bfa)">S</div><div class="msg-body"><div class="msg-name">Sofia Ramirez · Applicant</div><div class="msg-prev">Hi! I submitted my application this morning. Need more documents?</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><div class="msg-time">1h ago</div><div class="msg-udot"></div></div></div>
+        <div class="msg-item" onclick="showToast('💬 Chat with Robert opened')"><div class="msg-ava" style="background:linear-gradient(135deg,var(--blue),var(--accent))">R</div><div class="msg-body"><div class="msg-name">Robert Martinez · Client</div><div class="msg-prev">Confirming my pickup tomorrow at 5:30am for the airport. Thanks!</div></div><div class="msg-time">3h ago</div></div>
+        <div class="msg-item" onclick="showToast('💬 Chat with Dorothy opened')"><div class="msg-ava" style="background:linear-gradient(135deg,#dc2626,#ef4444)">D</div><div class="msg-body"><div class="msg-name">Dorothy Wilson · Client</div><div class="msg-prev">Maria is wonderful! Can I book her again for Thursday at 10am?</div></div><div class="msg-time">Yesterday</div></div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="screen" id="screen-settings">
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Business — Tascli</div></div>
+          <div class="panel-body">
+            <div class="setting-item"><div class="si-left"><div class="si-title">Legal Entity</div><div class="si-sub">July Twenty Enterprises LLC</div></div><div class="si-val">d/b/a Tascli</div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Domain</div><div class="si-sub">GoDaddy · tascli.com</div></div><div class="si-val">Active ✓</div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Commission Rate</div><div class="si-sub">Per ride from all drivers</div></div><div class="si-val" onclick="showToast('Commission rate: 15%')">15% →</div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Email</div><div class="si-sub">Google Workspace</div></div><div class="si-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="daa9afaaaab5a8ae9aaebba9b9b6b3f4b9b5b7">[email&#160;protected]</a></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Platform Settings</div></div>
+          <div class="panel-body">
+            <div class="setting-item"><div class="si-left"><div class="si-title">Auto-assign rides</div><div class="si-sub">Send to nearest driver</div></div><div class="toggle-s" onclick="this.classList.toggle('off');showToast(this.classList.contains('off')?'Auto-assign OFF':'Auto-assign ON')"></div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">New booking alerts</div><div class="si-sub">Push + SMS to you</div></div><div class="toggle-s" onclick="this.classList.toggle('off')"></div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Require driver photo</div><div class="si-sub">Profile photo mandatory</div></div><div class="toggle-s" onclick="this.classList.toggle('off')"></div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Background check gate</div><div class="si-sub">Block unverified drivers</div></div><div class="toggle-s" onclick="this.classList.toggle('off')"></div></div>
+            <div class="setting-item"><div class="si-left"><div class="si-title">Minor transport protocol</div><div class="si-sub">Extra consent under-18</div></div><div class="toggle-s" onclick="this.classList.toggle('off')"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const browserLang=(navigator.language||'en').toLowerCase();
+let lang=browserLang.startsWith('es')?'es':'en';
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-en').style.background=l==='en'?'var(--blue)':'none';
+  document.getElementById('btn-en').style.color=l==='en'?'white':'var(--text3)';
+  document.getElementById('btn-es').style.background=l==='es'?'var(--blue)':'none';
+  document.getElementById('btn-es').style.color=l==='es'?'white':'var(--text3)';
+  document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+l);if(v)el.innerHTML=v;});
+}
+window.addEventListener('DOMContentLoaded',()=>{setLang(lang);});
+
+const titles={overview:['Dashboard','Monday, April 6 · Utah Valley · 4 drivers online'],myrides:['My Rides','Romi as Driver · Tesla · 100% yours'],rides:['Live Rides','3 active · 7 scheduled today'],drivers:['Drivers','7 total · 4 online right now'],approvals:['Approvals','2 pending driver applications'],earnings:['Earnings','April 2026 · All sources'],zones:['Zones','Utah Valley active · SLC coming'],messages:['Messages','5 conversations · 2 unread'],settings:['Settings','Tascli · July Twenty Enterprises LLC']};
+
+function goScreen(name,navEl) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  else {
+    const order=['overview','myrides','rides','drivers','approvals','earnings','zones','messages','settings'];
+    document.querySelectorAll('.nav-item')[order.indexOf(name)]?.classList.add('active');
+  }
+  const t=titles[name];
+  if(t){document.getElementById('topbar-title').textContent=t[0];document.getElementById('topbar-sub').textContent=t[1];}
+}
+
+function approveDriver(id,name) {
+  const el=document.getElementById(id);
+  el.style.opacity='0';el.style.transform='translateX(20px)';
+  setTimeout(()=>{el.remove();showToast('✅ '+name+' approved!');checkApprovals();},300);
+  const badge=document.querySelector('.nb-amber');
+  if(badge){const n=parseInt(badge.textContent)-1;if(n<=0)badge.remove();else badge.textContent=n;}
+}
+
+function rejectDriver(id,name) {
+  const el=document.getElementById(id);
+  el.style.opacity='0';el.style.transform='translateX(-20px)';
+  setTimeout(()=>{el.remove();showToast('✗ '+name+' rejected');checkApprovals();},300);
+}
+
+function checkApprovals() {
+  const r=document.querySelectorAll('.appr-card').length;
+  if(r===0) document.getElementById('no-approvals').style.display='block';
+}
+
+function showToast(msg) {
+  const t=docum
