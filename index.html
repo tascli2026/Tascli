@@ -743,25 +743,25 @@ body {
       <div class="ride-card" onclick="goTo('drivers')">
         <div class="rc-icon rc-blue">🏥</div>
         <div class="rc-title" data-en="Medical" data-es="Médico">Medical</div>
-        <div class="rc-sub" data-en="Doctor, therapy, pharmacy" data-es="Doctor, terapia, farmacia">Doctor, therapy, pharmacy</div>
+        <div class="rc-sub" data-en="Doctor · Therapy · Hospital" data-es="Doctor · Terapia · Hospital">Doctor · Therapy · Hospital</div>
         <div class="rc-price">From $22</div>
       </div>
       <div class="ride-card" onclick="goTo('drivers')">
         <div class="rc-icon rc-cyan">✈️</div>
         <div class="rc-title" data-en="Airport" data-es="Aeropuerto">Airport</div>
-        <div class="rc-sub" data-en="SLC · Always on time" data-es="SLC · Siempre puntual">SLC · Always on time</div>
-        <div class="rc-price">From $60</div>
+        <div class="rc-sub" data-en="SLC ↔ Utah Valley · Flat rate" data-es="SLC ↔ Utah Valley · Precio fijo">SLC ↔ Utah Valley · Flat rate</div>
+        <div class="rc-price">$65 flat</div>
       </div>
       <div class="ride-card" onclick="goTo('drivers')">
         <div class="rc-icon rc-green">🏫</div>
         <div class="rc-title" data-en="School" data-es="Escolar">School</div>
-        <div class="rc-sub" data-en="Safe rides for your kids" data-es="Viajes seguros para tus hijos">Safe rides for your kids</div>
+        <div class="rc-sub" data-en="BYU · UVU · Safe rides" data-es="BYU · UVU · Viajes seguros">BYU · UVU · Safe rides</div>
         <div class="rc-price">From $20</div>
       </div>
       <div class="ride-card" onclick="goTo('drivers')">
         <div class="rc-icon rc-amber">🛒</div>
         <div class="rc-title" data-en="Errands" data-es="Mandados">Errands</div>
-        <div class="rc-sub" data-en="Grocery, pharmacy, more" data-es="Mercado, farmacia, más">Grocery, pharmacy, more</div>
+        <div class="rc-sub" data-en="Shopping · Pharmacy · Errands" data-es="Compras · Farmacia · Mandados">Shopping · Pharmacy · Errands</div>
         <div class="rc-price">From $18</div>
       </div>
     </div>
@@ -952,14 +952,25 @@ body {
       <div class="form-grp">
         <label class="form-lbl" data-en="Type of ride" data-es="Tipo de viaje">Type of ride</label>
         <select class="form-sel" id="ride-type" onchange="calcPreview()">
-          <option value="22" data-en="Doctor / Medical — Provo/Orem" data-es="Médico — Provo/Orem">Doctor / Medical — Provo/Orem · $22</option>
-          <option value="28" data-en="Doctor / Medical — Springville/Spanish Fork" data-es="Médico — Springville/Spanish Fork">Doctor / Medical — Springville area · $28</option>
-          <option value="32" data-en="Doctor / Medical — Lehi/American Fork" data-es="Médico — Lehi/Am. Fork">Doctor / Medical — Lehi/Am. Fork · $32</option>
-          <option value="60" data-en="Airport — SLC International" data-es="Aeropuerto — SLC">Airport — SLC International · $60</option>
-          <option value="55" data-en="Salt Lake City / Murray / Sandy" data-es="Salt Lake City / Murray / Sandy">Salt Lake City / Murray / Sandy · $55</option>
-          <option value="45" data-en="Nephi / Santaquin / Payson" data-es="Nephi / Santaquin / Payson">Nephi / Santaquin / Payson · $45</option>
-          <option value="20" data-en="School / BYU / UVU" data-es="Escolar / BYU / UVU">School / BYU / UVU · $20</option>
-          <option value="18" data-en="Errands / Shopping — Provo/Orem" data-es="Mandados — Provo/Orem">Errands / Shopping — Provo/Orem · $18</option>
+          <optgroup label="── Local Utah Valley ──">
+          <option value="22" data-en="Medical · Provo/Orem area" data-es="Médico · Provo/Orem">Medical · Provo/Orem area · $22</option>
+          <option value="20" data-en="School · BYU / UVU / Provo" data-es="Escolar · BYU / UVU">School · BYU / UVU / Provo · $20</option>
+          <option value="18" data-en="Errands / Shopping · Provo/Orem" data-es="Mandados · Provo/Orem">Errands / Shopping · Provo/Orem · $18</option>
+          </optgroup>
+          <optgroup label="── Utah Valley Extended ──">
+          <option value="28" data-en="Springville / Spanish Fork ↔ Provo" data-es="Springville / Spanish Fork ↔ Provo">Springville / Spanish Fork ↔ Provo · $28</option>
+          <option value="32" data-en="Lehi / American Fork ↔ Provo" data-es="Lehi / American Fork ↔ Provo">Lehi / American Fork ↔ Provo · $32</option>
+          <option value="38" data-en="Saratoga Springs / Eagle Mountain ↔ Provo" data-es="Saratoga Springs / Eagle Mountain ↔ Provo">Saratoga Springs / Eagle Mtn ↔ Provo · $38</option>
+          <option value="45" data-en="Nephi / Santaquin / Payson ↔ Provo" data-es="Nephi / Santaquin / Payson ↔ Provo">Nephi / Santaquin / Payson ↔ Provo · $45</option>
+          </optgroup>
+          <optgroup label="── Salt Lake Area ──">
+          <option value="52" data-en="West Valley / Taylorsville ↔ Utah Valley" data-es="West Valley / Taylorsville ↔ Utah Valley">West Valley / Taylorsville ↔ Utah Valley · $52</option>
+          <option value="60" data-en="Salt Lake City / Murray / Sandy ↔ Utah Valley" data-es="Salt Lake City ↔ Utah Valley">Salt Lake City / Murray / Sandy ↔ Utah Valley · $60</option>
+          <option value="65" data-en="Airport SLC ↔ Utah Valley (flat rate)" data-es="Aeropuerto SLC ↔ Utah Valley">✈️ Airport SLC ↔ Utah Valley · $65</option>
+          </optgroup>
+          <optgroup label="── South Utah ──">
+          <option value="48" data-en="Payson / Santaquin / Nephi ↔ SLC" data-es="Payson / Santaquin / Nephi ↔ SLC">Payson / Santaquin / Nephi ↔ SLC · $48</option>
+          </optgroup>
         </select>
       </div>
 
